@@ -98,96 +98,129 @@ export default function ProdutosPage() {
   if (!token) return null;
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">                
+    <div className="h-screen flex flex-col overflow-hidden">
       <Header />
 
-      <div className="flex flex-1 overflow-hidden">
-
+      <main className="flex flex-1 overflow-hidden" aria-label="Lista de produtos">
         <div className="flex flex-col flex-1 overflow-hidden">
 
-          <div className="shrink-0 px-6 py-4 flex gap-4">
-            <input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              placeholder="Buscar..."
-              className="border p-2 rounded w-[250px]"
-            />
+          <section className="shrink-0 px-6 py-4 flex gap-4" aria-label="Filtros de produtos">
 
-            <select
-              value={order}
-              onChange={(e) => setOrder(e.target.value as OrderType)}
-              className="border p-2 rounded"
-            >
-              <option value="nome-asc">A-Z</option>
-              <option value="nome-desc">Z-A</option>
-              <option value="preco-asc">Preço ↑</option>
-              <option value="preco-desc">Preço ↓</option>
-            </select>
+            <div>
+              <label htmlFor="search" className="sr-only">
+                Buscar produtos
+              </label>
 
-            <label className="flex items-center gap-2">
               <input
-                type="checkbox"
-                checked={onlyFav}
-                onChange={() => setOnlyFav(!onlyFav)}
+                id="search"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                placeholder="Buscar..."
+                className="border p-2 rounded w-[250px]"
+                aria-label="Buscar produtos por nome ou código"
               />
-              Favoritos
-            </label>
-          </div>
+            </div>
 
-          <div className="flex-1 overflow-y-auto px-6 pt-2 pb-6">
+            <div>
+              <label htmlFor="order" className="sr-only">
+                Ordenar produtos
+              </label>
+
+              <select
+                id="order"
+                value={order}
+                onChange={(e) => setOrder(e.target.value as OrderType)}
+                className="border p-2 rounded"
+                aria-label="Ordenar produtos"
+              >
+                <option value="nome-asc">A-Z</option>
+                <option value="nome-desc">Z-A</option>
+                <option value="preco-asc">Preço ↑</option>
+                <option value="preco-desc">Preço ↓</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label htmlFor="fav" className="flex items-center gap-2">
+                <input
+                  id="fav"
+                  type="checkbox"
+                  checked={onlyFav}
+                  onChange={() => setOnlyFav(!onlyFav)}
+                />
+                Favoritos
+              </label>
+            </div>
+          </section>
+
+          <section className="flex-1 overflow-y-auto px-6 pt-2 pb-6" aria-label="Lista de cards de produtos">
 
             {isLoading ? (
               <Loading message="Buscando produtos..." />
             ) : processed.length === 0 ? (
               <div className="h-full flex items-center justify-center text-gray-500">
-                Produto não encontrado
+                Nenhum produto encontrado
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-
                 {paginated.map((product) => (
-                  <div key={product.codigo}>
-                    <Card
-                      product={product}
+                  <article key={product.codigo}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Abrir detalhes do produto ${product.nome}`}
                       onClick={() => setSelected(product)}
-                      isFavorite={favorites.includes(product.codigo)}
-                      onToggleFavorite={() => toggle(product.codigo)}
-                    />
-                  </div>
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          setSelected(product);
+                        }
+                      }}
+                    >
+                      <Card
+                        product={product}
+                        onClick={() => setSelected(product)}
+                        isFavorite={favorites.includes(product.codigo)}
+                        onToggleFavorite={() => toggle(product.codigo)}
+                      />
+                    </div>
+                  </article>
                 ))}
-
               </div>
             )}
-
-          </div>
-
+          </section>
         </div>
-      </div>
+      </main>
 
-      <div className="shrink-0 h-[70px] flex items-center justify-center border-t bg-white">
+      <footer className="shrink-0 h-[70px] flex items-center justify-center border-t bg-white">
         <Footer
           page={page}
           totalPages={totalPages}
           onChangePage={setPage}
         />
-      </div>
+      </footer>
 
       <Modal isOpen={!!selected} onClose={() => setSelected(null)}>
         {selected && (
           <div>
             <img
               src={selected.imagem}
+              alt={`Imagem do produto ${selected.nome}`}
               className="w-full h-40 object-contain"
             />
-            <h2 className="font-semibold mt-2">{selected.nome}</h2>
-            <p className="text-sm text-gray-600">{selected.descricao}</p>
+
+            <h2 className="font-semibold mt-2">
+              {selected.nome}
+            </h2>
+
+            <p className="text-sm text-gray-600">
+              {selected.descricao}
+            </p>
           </div>
         )}
       </Modal>
-
     </div>
   );
 }

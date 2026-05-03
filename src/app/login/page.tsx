@@ -59,7 +59,7 @@ export default function LoginPage(): JSX.Element {
           className="bg-[#84C318] w-[420px] p-10 rounded-2xl shadow-lg flex flex-col gap-5"
         >
           {loginMutation.isPending && (
-            <Loading />
+            <Loading fullScreen={false} />
           )}
 
           <div className="flex flex-col gap-4">

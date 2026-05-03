@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, JSX, RefObject } from "react";
+import {
+  useEffect,
+  useRef,
+  JSX,
+  RefObject,
+} from "react";
 import { ModalProps } from "./modal.types";
 import { Button } from "../button/button";
 
@@ -10,9 +15,17 @@ export function Modal({
   children,
   title,
 }: ModalProps): JSX.Element | null {
-  const contentRef: RefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
+  const contentRef: RefObject<HTMLDivElement | null> =
+    useRef<HTMLDivElement>(null);
+
+  const previousActiveElement = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    previousActiveElement.current =
+      document.activeElement as HTMLElement;
+
     const handleEsc = (e: KeyboardEvent): void => {
       if (e.key === "Escape") {
         onClose();
@@ -21,12 +34,20 @@ export function Modal({
 
     document.addEventListener("keydown", handleEsc);
 
+    setTimeout(() => {
+      contentRef.current?.focus();
+    }, 0);
+
     return () => {
       document.removeEventListener("keydown", handleEsc);
-    };
-  }, [onClose]);
 
-  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>): void => {
+      previousActiveElement.current?.focus?.();
+    };
+  }, [isOpen, onClose]);
+
+  const handleOutsideClick = (
+    e: React.MouseEvent<HTMLDivElement>
+  ): void => {
     if (
       contentRef.current &&
       !contentRef.current.contains(e.target as Node)
@@ -46,20 +67,29 @@ export function Modal({
         bg-black/40 backdrop-blur-sm
         animate-fadeIn
       "
+      aria-hidden="true"
     >
       <div
         ref={contentRef}
-        onMouseDown={(e) => e.stopPropagation()}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? "modal-title" : undefined}
         className="
           w-full max-w-md
           bg-white rounded-2xl shadow-xl
           p-6
           transform transition-all
           animate-scaleIn
+          outline-none
         "
+        onMouseDown={(e) => e.stopPropagation()}
       >
         {title && (
-          <div className="mb-4 text-lg font-semibold text-gray-800">
+          <div
+            id="modal-title"
+            className="mb-4 text-lg font-semibold text-gray-800"
+          >
             {title}
           </div>
         )}
@@ -69,7 +99,10 @@ export function Modal({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button onClick={onClose}>
+          <Button
+            onClick={onClose}
+            aria-label="Fechar modal"
+          >
             Fechar
           </Button>
         </div>

@@ -14,7 +14,7 @@ export function Card({
   product,
 }: CardProps): JSX.Element {
   return (
-    <div
+    <article
       className="
         bg-white 
         rounded-2xl 
@@ -27,9 +27,17 @@ export function Card({
         relative
         hover:-translate-y-[2px]
       "
+      aria-label={`Produto ${product.nome}, código ${product.codigo}`}
     >
       <button
+        type="button"
         onClick={onToggleFavorite}
+        aria-label={
+          isFavorite
+            ? `Remover ${product.nome} dos favoritos`
+            : `Adicionar ${product.nome} aos favoritos`
+        }
+        aria-pressed={isFavorite}
         className="
           absolute top-3 right-3 
           hover:scale-110 
@@ -39,21 +47,33 @@ export function Card({
         "
       >
         {isFavorite ? (
-          <SolidHeart className="w-5 h-5 text-red-500" />
+          <SolidHeart
+            className="w-5 h-5 text-red-500"
+            aria-hidden="true"
+          />
         ) : (
-          <OutlineHeart className="w-5 h-5 text-gray-400 hover:text-red-400 transition" />
+          <OutlineHeart
+            className="w-5 h-5 text-gray-400 hover:text-red-400 transition"
+            aria-hidden="true"
+          />
         )}
       </button>
 
-      <div className="w-full h-[130px] flex items-center justify-center">
+      <div
+        className="w-full h-[130px] flex items-center justify-center"
+        aria-label={`Imagem do produto ${product.nome}`}
+      >
         <img
           src={product.imagem}
-          alt={product.nome}
+          alt={`Imagem do produto ${product.nome}`}
           className="max-h-full object-contain"
         />
       </div>
 
-      <span className="text-[10px] bg-[#84C318] text-white px-2 py-[2px] rounded-full w-fit font-medium">
+      <span
+        className="text-[10px] bg-[#84C318] text-white px-2 py-[2px] rounded-full w-fit font-medium"
+        aria-label="Produto exclusivo"
+      >
         EXCLUSIVO
       </span>
 
@@ -62,19 +82,23 @@ export function Card({
       </h2>
 
       <p className="text-xs text-gray-400">
-        Cód: {product.codigo}
+        Código do produto: {product.codigo}
       </p>
 
-      <p className="text-[#84C318] font-bold text-base">
+      <p
+        className="text-[#84C318] font-bold text-base"
+        aria-label={`Preço ${product.preco} reais`}
+      >
         R$ {Number(product.preco).toFixed(2)}
       </p>
 
       <Button
         variant={ButtonVariant.DRAWER}
         onClick={onClick}
+        aria-label={`Ver detalhes do produto ${product.nome}`}
       >
         CONFIRA
       </Button>
-    </div>
+    </article>
   );
 }

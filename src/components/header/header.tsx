@@ -44,6 +44,7 @@ export function Header(): JSX.Element {
           position={Position.BOTTOM_RIGHT}
           trigger={
             <img
+              alt={`Avatar de ${user?.nome_usuario ?? "usuário"}`}
               src="https://i.pravatar.cc/40"
               className="w-10 h-10 rounded-full cursor-pointer"
             />
