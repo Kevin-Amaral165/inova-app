@@ -1,24 +1,24 @@
-import { InputHTMLAttributes, ReactNode } from "react";
+"use client";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  icon?: ReactNode;
-}
+import { JSX } from "react";
+import { InputProps } from "./input.types";
+import { InputType } from "@/src/enum/enum";
 
 export function Input({
-    icon,
-    type = "text",
-    ...props
-}: InputProps) {
+  value,
+  onChange,
+  placeholder,
+  type = InputType.TEXT,
+  disabled = false,
+  icon,
+  name,
+}: InputProps): JSX.Element {
   return (
     <div
-      className="
-        flex items-center
-        w-full
-        h-[42px]
-        px-4
-        rounded-full
-        bg-[#F2F2F2]
-      "
+      className={`
+        flex items-center w-full h-[42px] px-4 rounded-full
+        ${disabled ? "bg-gray-200" : "bg-[#F2F2F2]"}
+      `}
     >
       {icon && (
         <span className="mr-2 flex items-center text-gray-600">
@@ -27,16 +27,17 @@ export function Input({
       )}
 
       <input
-        {...props}
+        name={name}
+        value={value}
+        onChange={(e) => onChange?.(e.target.value)}
         type={type}
-        autoComplete="new-password"
+        placeholder={placeholder}
+        disabled={disabled}
+        autoComplete="off"
         className="
-          w-full
-          bg-transparent
-          outline-none
-          text-sm
-          text-gray-600
-          placeholder:text-gray-400
+          w-full bg-transparent outline-none text-sm
+          text-gray-600 placeholder:text-gray-400
+          disabled:cursor-not-allowed
         "
       />
     </div>

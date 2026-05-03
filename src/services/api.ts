@@ -1,68 +1,44 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { useUserStore } from "@/src/store/userStore";
 
-export const api = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
-let isLoggingOut = false;
+let isRefreshing: boolean = false;
 
-// REQUEST → adiciona token corretamente (SEM erro de tipagem)
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = useUserStore.getState().token;
+api.interceptors.request.use((config) => {
+  const token: string | null = useUserStore.getState().token;
 
-  if (token && config.headers) {
-    config.headers.set("Authorization", `Bearer ${token}`);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;
 });
 
-// RESPONSE → padroniza retorno e erros
 api.interceptors.response.use(
-  (response) => {
-    const data = response.data;
+  (res) => res.data,
+  (error: AxiosError) => {
+    const status: number | undefined = error.response?.status;
+    const url: string | undefined = error.config?.url;
 
-    // API usa status próprio (0 = erro)
-    if (data?.status === 0) {
-      return Promise.reject({
-        message: data?.message || "Erro na requisição",
-        isBusinessError: true,
-      });
+    if (url?.includes("/login/acessar")) {
+      return Promise.reject(error);
     }
 
-    return data; // 👈 importante para React Query
-  },
-  (error: AxiosError) => {
-    const status = error.response?.status;
+    if (status === 401) {
+      if (!isRefreshing) {
+        isRefreshing = true;
 
-    // 401 → logout global
-    if (status === 401 && !isLoggingOut) {
-      isLoggingOut = true;
+        const { logout } = useUserStore.getState();
+        logout();
 
-      const { logout } = useUserStore.getState();
-      logout();
-
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        isRefreshing = false;
       }
     }
 
-    // erro de rede
-    if (!status) {
-      return Promise.reject({
-        message: "Erro de conexão. Verifique sua internet.",
-        isNetworkError: true,
-      });
-    }
-
-    return Promise.reject({
-      message: error.message,
-      status,
-    });
+    return Promise.reject(error);
   }
 );

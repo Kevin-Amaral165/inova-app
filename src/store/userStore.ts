@@ -1,50 +1,67 @@
 "use client";
 
-import { create, StoreApi, UseBoundStore } from "zustand";
+import { create } from "zustand";
 import { UserState } from "./types";
 
-const getStorage: () => Storage | null = () => {
-  if (typeof window === "undefined") return null;
+const safeJsonParse: (value: string | null) => any = (value: string | null) => {
+  if (!value || value === "undefined" || value === "null") return null;
 
-  return localStorage.getItem("token") ? localStorage : sessionStorage;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
 };
 
-export const useUserStore: UseBoundStore<StoreApi<UserState>> = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set) => ({
   user: null,
   token: null,
   rememberMe: false,
 
   setUser: (user, token, remember) => {
-    const storage = remember ? localStorage : sessionStorage;
+    if (!token || !user) return;
+
+    const storage: Storage = remember ? localStorage : sessionStorage;
 
     storage.setItem("user", JSON.stringify(user));
     storage.setItem("token", token);
 
-    set({ user, token, rememberMe: remember });
-  },
-
-  getUser: (): void => {
-    if (typeof window === "undefined") return;
-
-    const storage: Storage | null = getStorage();
-    if (!storage) return;
-
-    const token: string | null = storage.getItem("token");
-    const user: string | null = storage.getItem("user");
-
     set({
+      user,
       token,
-      user: user ? JSON.parse(user) : null,
-      rememberMe: storage === localStorage,
+      rememberMe: remember,
     });
   },
 
-  logout: (): void => {
+  getUser: () => {
+    if (typeof window === "undefined") return;
+
+    const localToken: string | null = localStorage.getItem("token");
+    const sessionToken: string | null = sessionStorage.getItem("token");
+
+    const token: string | null = localToken || sessionToken;
+
+    const user =
+      safeJsonParse(localStorage.getItem("user")) ||
+      safeJsonParse(sessionStorage.getItem("user"));
+
+    set({
+      token: token && token !== "undefined" ? token : null,
+      user,
+      rememberMe: !!localToken,
+    });
+  },
+
+  logout: () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("token");
 
-    set({ user: null, token: null, rememberMe: false });
+    set({
+      user: null,
+      token: null,
+      rememberMe: false,
+    });
   },
 }));

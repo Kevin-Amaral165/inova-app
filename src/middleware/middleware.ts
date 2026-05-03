@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware({ nextUrl, cookies, url }: NextRequest) {
-  const token: string | undefined = cookies.get("token")?.value;
-  const { pathname } = nextUrl;
+export function middleware(req: NextRequest): NextResponse<unknown> {
+  const token: string | undefined = req.cookies.get("token")?.value;
+  const { pathname } = req.nextUrl;
 
   const isLogin: boolean = pathname === "/login";
-  const isProdutos: boolean = pathname.startsWith("/produtos");
+  const isProtected: boolean = pathname.startsWith("/produtos");
 
-  if (!token && isProdutos) {
-    return NextResponse.redirect(new URL("/login", url));
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (token && isLogin) {
-    return NextResponse.redirect(new URL("/produtos", url));
+  if (isLogin && token) {
+    return NextResponse.redirect(new URL("/produtos", req.url));
   }
 
   return NextResponse.next();

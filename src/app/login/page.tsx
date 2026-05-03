@@ -1,29 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/src/hooks/useLogin";
 import { Input } from "@/src/components/input/input";
 import { Button } from "@/src/components/button/button";
 import { UserIcon, LockClosedIcon } from "@heroicons/react/24/solid";
+import { useUserStore } from "@/src/store/userStore";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { UseMutationResult } from "@tanstack/react-query";
+import { Loading } from "@/src/components/loading/loading";
+import { HtmlType, InputType } from "@/src/enum/enum";
 
+export default function LoginPage(): JSX.Element {
+  const router: AppRouterInstance = useRouter();
+  const loginMutation: UseMutationResult = useLogin();
 
-export default function LoginPage() {
-  const router = useRouter();
-  const loginMutation = useLogin();
+  const token: string | null = useUserStore((store) => store.token);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [remember, setRemember] = useState<boolean>(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+    if (token) {
+      router.replace("/produtos");
+    }
+  }, [token]);
+
+  const handleSubmit: (e: React.FormEvent) => void = (e: React.FormEvent) => {
     e.preventDefault();
 
     loginMutation.mutate(
       { email, senha: password, remember },
       {
         onSuccess: () => {
-          router.push("/produtos");
+          router.replace("/produtos");
         },
       }
     );
@@ -31,56 +43,38 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-      
       <img
         src="/images/login-bg.jpg"
         alt="background"
-        className="
-          absolute inset-0 
-          w-full h-full 
-          object-cover
-          object-fill
-        "
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       <div className="relative z-10 flex flex-col items-center">
-        
         <h1 className="text-3xl font-semibold text-[#84C318] mb-8">
           Bem-vindo a Innovation Brindes
         </h1>
 
         <form
-          autoComplete="off"
           onSubmit={handleSubmit}
-          className="
-            bg-[#84C318]
-            w-[420px]
-            p-10
-            rounded-2xl
-            shadow-[0_20px_40px_rgba(0,0,0,0.2)]
-            flex flex-col gap-5
-          "
+          className="bg-[#84C318] w-[420px] p-10 rounded-2xl shadow-lg flex flex-col gap-5"
         >
-          {loginMutation.isError && (
-            <p className="text-white text-sm text-center">
-              {(loginMutation.error as Error)?.message ||
-                "Erro ao fazer login"}
-            </p>
+          {loginMutation.isPending && (
+            <Loading />
           )}
 
           <div className="flex flex-col gap-4">
             <Input
               placeholder="Usuário"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={setEmail}
               icon={<UserIcon width={16} height={16} />}
             />
 
             <Input
-              type="password"
+              type={InputType.PASSWORD}
               placeholder="Senha"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
               icon={<LockClosedIcon width={16} height={16} />}
             />
           </div>
@@ -91,7 +85,6 @@ export default function LoginPage() {
                 type="checkbox"
                 checked={remember}
                 onChange={() => setRemember(!remember)}
-                className="accent-white"
               />
               Manter logado
             </label>
@@ -102,17 +95,11 @@ export default function LoginPage() {
           </div>
 
           <Button
-            htmlType="submit"
+            htmlType={HtmlType.SUBMIT}
             loading={loginMutation.isPending}
-            className="
-              mt-4 
-              bg-white 
-              text-gray-700 
-              hover:bg-gray-100 
-              shadow-md
-            "
+            className="mt-4 bg-white text-gray-700 hover:bg-gray-100"
           >
-            {loginMutation.isPending ? "Entrando..." : "Login"}
+            Entrar
           </Button>
         </form>
       </div>
