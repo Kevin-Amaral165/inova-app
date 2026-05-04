@@ -49,8 +49,8 @@ export default function ProdutosPage() {
   const baseData: Product[] = useMemo(() => {
     if (!data) return [];
     if (Array.isArray(data)) return data as Product[];
-    if (Array.isArray((data as any)?.data)) return (data as any).data;
-    if (Array.isArray((data as any)?.products)) return (data as any).products;
+    if (Array.isArray((data)?.data)) return (data).data;
+    if (Array.isArray((data)?.products)) return (data).products;
     return [];
   }, [data]);
 
@@ -98,15 +98,15 @@ export default function ProdutosPage() {
   if (!token) return null;
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex flex-1 overflow-hidden" aria-label="Lista de produtos">
+      <main className="flex flex-1 min-h-0 flex-col" aria-label="Lista de produtos">
         <div className="flex flex-col flex-1 overflow-hidden">
 
-          <section className="shrink-0 px-6 py-4 flex gap-4" aria-label="Filtros de produtos">
+          <section className="px-4 md:px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between flex-wrap" aria-label="Filtros de produtos">
 
-            <div>
+            <div className="flex-1">
               <label htmlFor="search" className="sr-only">
                 Buscar produtos
               </label>
@@ -119,44 +119,46 @@ export default function ProdutosPage() {
                   setPage(1);
                 }}
                 placeholder="Buscar..."
-                className="border p-2 rounded w-[250px]"
+                className="border rounded w-full max-w-[180px] md:max-w-none md:w-[250px] px-2 py-1 text-xs md:text-base"
                 aria-label="Buscar produtos por nome ou código"
               />
             </div>
 
-            <div>
-              <label htmlFor="order" className="sr-only">
-                Ordenar produtos
-              </label>
+            <div className="flex gap-2 items-center">
+              <div className="flex-1 md:flex-none">
+                <label htmlFor="order" className="sr-only">
+                  Ordenar produtos
+                </label>
 
-              <select
-                id="order"
-                value={order}
-                onChange={(e) => setOrder(e.target.value as OrderType)}
-                className="border p-2 rounded"
-                aria-label="Ordenar produtos"
-              >
-                <option value="nome-asc">A-Z</option>
-                <option value="nome-desc">Z-A</option>
-                <option value="preco-asc">Preço ↑</option>
-                <option value="preco-desc">Preço ↓</option>
-              </select>
-            </div>
+                <select
+                  id="order"
+                  value={order}
+                  onChange={(e) => setOrder(e.target.value as OrderType)}
+                  className="border p-2 rounded w-full text-sm"
+                  aria-label="Ordenar produtos"
+                >
+                  <option value="nome-asc">A-Z</option>
+                  <option value="nome-desc">Z-A</option>
+                  <option value="preco-asc">Preço ↑</option>
+                  <option value="preco-desc">Preço ↓</option>
+                </select>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <label htmlFor="fav" className="flex items-center gap-2">
-                <input
-                  id="fav"
-                  type="checkbox"
-                  checked={onlyFav}
-                  onChange={() => setOnlyFav(!onlyFav)}
-                />
-                Favoritos
-              </label>
+              <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded border">
+                <label htmlFor="fav" className="flex items-center gap-2 cursor-pointer text-sm whitespace-nowrap">
+                  <input
+                    id="fav"
+                    type="checkbox"
+                    checked={onlyFav}
+                    onChange={() => setOnlyFav(!onlyFav)}
+                  />
+                  Favoritos
+                </label>
+              </div>
             </div>
           </section>
 
-          <section className="flex-1 overflow-y-auto px-6 pt-2 pb-6" aria-label="Lista de cards de produtos">
+          <section className="flex-1 overflow-y-auto px-4 md:px-6 pt-2 pb-6" aria-label="Lista de cards de produtos">
 
             {isLoading ? (
               <Loading message="Buscando produtos..." />
@@ -165,27 +167,15 @@ export default function ProdutosPage() {
                 Nenhum produto encontrado
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {paginated.map((product) => (
-                  <article key={product.codigo}>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Abrir detalhes do produto ${product.nome}`}
+                  <article key={product.codigo} data-testid="product-card">
+                    <Card
+                      product={product}
                       onClick={() => setSelected(product)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          setSelected(product);
-                        }
-                      }}
-                    >
-                      <Card
-                        product={product}
-                        onClick={() => setSelected(product)}
-                        isFavorite={favorites.includes(product.codigo)}
-                        onToggleFavorite={() => toggle(product.codigo)}
-                      />
-                    </div>
+                      isFavorite={favorites.includes(product.codigo)}
+                      onToggleFavorite={() => toggle(product.codigo)}
+                    />
                   </article>
                 ))}
               </div>

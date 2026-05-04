@@ -49,14 +49,14 @@ export default function LoginPage(): JSX.Element {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      <div className="relative z-10 flex flex-col items-center">
-        <h1 className="text-3xl font-semibold text-[#84C318] mb-8">
+      <div className="relative z-10 flex flex-col items-center px-4 w-full">
+        <h1 className="text-2xl md:text-3xl font-semibold text-[#84C318] mb-8 text-center">
           Bem-vindo a Innovation Brindes
         </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[#84C318] w-[420px] p-10 rounded-2xl shadow-lg flex flex-col gap-5"
+          className="bg-[#84C318] w-full max-w-[420px] p-6 md:p-10 rounded-2xl shadow-lg flex flex-col gap-5"
         >
           {loginMutation.isPending && (
             <Loading fullScreen={false} />
@@ -68,6 +68,7 @@ export default function LoginPage(): JSX.Element {
               value={email}
               onChange={setEmail}
               icon={<UserIcon width={16} height={16} />}
+              data-testid="input-email"
             />
 
             <Input
@@ -76,6 +77,7 @@ export default function LoginPage(): JSX.Element {
               value={password}
               onChange={setPassword}
               icon={<LockClosedIcon width={16} height={16} />}
+              data-testid="input-password"
             />
           </div>
 

@@ -24,13 +24,6 @@ docker run -p 3000:3000 minha-app-next
 
 http://localhost:3000  
 
----
-
-# 🌐 Variáveis de ambiente
-
-NEXT_PUBLIC_API_URL=https://apihomolog.innovationbrindes.com.br/api/innova-dinamica
-
----
 
 # 🧠 Docker neste projeto
 

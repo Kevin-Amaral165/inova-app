@@ -76,9 +76,9 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={title ? "modal-title" : undefined}
         className="
-          w-full max-w-md
+          w-[90%] max-w-md
           bg-white rounded-2xl shadow-xl
-          p-6
+          p-5 md:p-6
           transform transition-all
           animate-scaleIn
           outline-none

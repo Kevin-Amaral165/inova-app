@@ -64,7 +64,7 @@ export function Dropdown({
       {open && (
         <div
           style={getStyle()}
-          className="absolute w-44 bg-white border rounded-lg shadow-md z-50 overflow-hidden"
+          className="absolute w-40 md:w-44 bg-white border rounded-lg shadow-md z-50 overflow-hidden"
         >
           {items.map((item, index) => {
             if (item.divider) {

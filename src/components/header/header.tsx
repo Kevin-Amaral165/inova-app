@@ -19,18 +19,18 @@ export function Header(): JSX.Element {
   }
 
   return (
-    <div className="w-full bg-[#84C318] text-white px-6 py-3 flex items-center justify-between shadow-md overflow-visible">
+    <div className="w-full bg-[#84C318] text-white px-4 md:px-6 py-3 flex items-center justify-between shadow-md overflow-visible">
       <div className="flex items-center gap-2">
-        <div className="font-bold text-lg">Innovation</div>
-        <span className="text-xs opacity-80">BRINDES</span>
+        <div className="font-bold text-base md:text-lg">Innovation</div>
+        <span className="text-[10px] md:text-xs opacity-80 uppercase">Brindes</span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 md:gap-3">
         <div className="text-right text-sm">
-          <p className="font-semibold">
+          <p className="font-semibold text-xs md:text-sm">
             {user?.nome_usuario}
           </p>
-          <p className="text-xs opacity-80">
+          <p className="text-[10px] md:text-xs opacity-80 hidden md:block">
             {new Date().toLocaleDateString("pt-BR", {
               weekday: "long",
               day: "2-digit",

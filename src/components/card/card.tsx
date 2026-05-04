@@ -17,21 +17,25 @@ export function Card({
     <article
       className="
         bg-white 
-        rounded-2xl 
+        rounded-xl md:rounded-2xl 
         border border-gray-100
         shadow-sm
         hover:shadow-lg
         transition-all duration-200
-        p-4 
-        flex flex-col gap-3 
+        p-3 md:p-4 
+        flex flex-col gap-2 md:gap-3 
         relative
         hover:-translate-y-[2px]
+        h-full
       "
       aria-label={`Produto ${product.nome}, código ${product.codigo}`}
     >
       <button
         type="button"
-        onClick={onToggleFavorite}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite();
+        }}
         aria-label={
           isFavorite
             ? `Remover ${product.nome} dos favoritos`
@@ -60,7 +64,7 @@ export function Card({
       </button>
 
       <div
-        className="w-full h-[130px] flex items-center justify-center"
+        className="w-full h-[100px] md:h-[130px] flex items-center justify-center"
         aria-label={`Imagem do produto ${product.nome}`}
       >
         <img

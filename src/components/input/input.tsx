@@ -16,7 +16,7 @@ export function Input({
   return (
     <div
       className={`
-        flex items-center w-full h-[42px] px-4 rounded-full
+        flex items-center w-full px-4 py-1.5 md:py-2 rounded-full
         ${disabled ? "bg-gray-200" : "bg-[#F2F2F2]"}
       `}
     >

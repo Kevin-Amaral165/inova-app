@@ -39,7 +39,7 @@ export const useLogin = () => {
       toast.success("Login realizado com sucesso");
     },
 
-    onError: (err: any) => {
+    onError: (err) => {
       toast.error(err.message || "Erro ao fazer login");
     },
   });

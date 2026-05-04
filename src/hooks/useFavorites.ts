@@ -1,29 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type UseFavoritesReturn = {
   favorites: string[];
   toggle: (id: string) => void;
 };
 
-export const useFavorites = (): UseFavoritesReturn => {
-  const [favorites, setFavorites] = useState<string[]>([]);
+const safeParse = (value: string | null): string[] => {
+  if (!value) return [];
 
-  useEffect(() => {
-    const stored = localStorage.getItem("favorites");
-    if (stored) setFavorites(JSON.parse(stored));
-  }, []);
+  try {
+    const parsed = JSON.parse(value);
 
-  const toggle = (id: string): void => {
-    let updated: string[];
-
-    if (favorites.includes(id)) {
-      updated = favorites.filter((favoriteId) => favoriteId !== id);
-    } else {
-      updated = [...favorites, id];
+    if (Array.isArray(parsed)) {
+      return parsed.filter((item): item is string => typeof item === "string");
     }
 
-    setFavorites(updated);
-    localStorage.setItem("favorites", JSON.stringify(updated));
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+export const useFavorites = (): UseFavoritesReturn => {
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+
+    const stored = localStorage.getItem("favorites");
+    return safeParse(stored);
+  });
+
+  const toggle = (id: string): void => {
+    setFavorites((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((f) => f !== id)
+        : [...prev, id];
+
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return { favorites, toggle };
