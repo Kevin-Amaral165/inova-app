@@ -39,7 +39,6 @@ O Docker é utilizado em duas etapas: a primeira realiza o build da aplicação 
 
 ---
 
----
 
 # ⚙️ Entregas pendentes
 
@@ -48,7 +47,6 @@ Melhoria de tratamentos de estados refinado
 
 ---
 
----
 
 # ⚙️ Implementações futuras
 
