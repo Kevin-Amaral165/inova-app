@@ -194,13 +194,12 @@ export default function ProdutosPage() {
         </div>
       </main>
 
-      <footer className="shrink-0 h-[70px] flex items-center justify-center border-t bg-white">
-        <Footer
-          page={page}
-          totalPages={totalPages}
-          onChangePage={setPage}
-        />
-      </footer>
+      <Footer
+        page={page}
+        totalPages={totalPages}
+        onChangePage={setPage}
+      />
+
 
       <Modal isOpen={!!selected} onClose={() => setSelected(null)}>
         {selected && (

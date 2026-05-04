@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import { useUserStore } from "@/src/store/userStore";
 
 export const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "https://apihomolog.innovationbrindes.com.br/api/innova-dinamica",
   timeout: 10000,
 });
 

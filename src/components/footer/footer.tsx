@@ -12,7 +12,7 @@ export function Footer({
 
   return (
     <footer
-      className="w-full bg-white border-t shadow-md flex items-center justify-center"
+      className="w-full bg-white border-t shadow-md flex items-center justify-center h-[60px]"
       aria-label="Paginação de produtos"
     >
       <nav

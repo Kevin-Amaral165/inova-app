@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Inova App - Frontend (Next.js + Docker)
 
-## Getting Started
+Este projeto é um frontend desenvolvido com Next.js e containerizado com Docker para facilitar a execução em qualquer ambiente. Ele utiliza Next.js, React e Docker.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# 🐳 Requisitos
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Docker Desktop
+- Git
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# ⚙️ Como executar o projeto
 
-## Learn More
+git clone git@github.com:Kevin-Amaral165/store-app.git  
+cd inova-app  
+docker build -t minha-app-next .  
+docker run -p 3000:3000 minha-app-next  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 🌐 Acesso
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+http://localhost:3000  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 🌐 Variáveis de ambiente
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+NEXT_PUBLIC_API_URL=https://apihomolog.innovationbrindes.com.br/api/innova-dinamica
+
+---
+
+# 🧠 Docker neste projeto
+
+O Docker é utilizado em duas etapas: a primeira realiza o build da aplicação Next.js instalando dependências e gerando os arquivos otimizados, e a segunda executa apenas o resultado final reduzindo tamanho da imagem e melhorando performance.
+
+---
+
+# 👨‍💻 Autor
+
+Kevin Amaral
